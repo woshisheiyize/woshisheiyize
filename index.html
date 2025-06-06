@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
+  <title>.</title>
+  <link href="https://web.sdk.qcloud.com/player/tcplayer/release/v4.2.1/tcplayer.min.css" rel="stylesheet">
+  <script src="https://web.sdk.qcloud.com/player/tcplayer/release/v4.2.1/libs/hls.min.0.13.2m.js"></script>
+  <script src="https://web.sdk.qcloud.com/player/tcplayer/release/v4.5.0/tcplayer.v4.5.0.min.js"></script>
+  <script src="https://note.youdao.com/yws/api/personal/file//2ADA0E141C9D415FBACE00D34867D2CB?method=download&inline=true&shareKey=c2d5c4473000f1a7c1008e35f3edccaa&laye.mim.css"></script>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    .video-block {
+      margin-bottom: 40px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 20px;
+    }
+    .video-title {
+      font-size: 20px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      display: block;
+      background-color: lightskyblue;
+      padding: 5px;
+    }
+    .tcplayer-container {
+      margin: 0 auto;
+      width: 1080px;
+      height: 600px;
+      max-width: 100%;
+      display: none;
+    }
+    .jump-btn {
+      display: none;
+      margin: 10px auto;
+      padding: 8px 16px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: orange;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+      width: auto;
+      min-width: 200px;
+      text-align: center;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div id="content">加载中...</div>
+  <script>
+    const players = [];
+    let currentPlayingIndex = null;
+
+    function getLocalData() {
+      return {
+        data_mp4: [
+          { title: "吃🍉大师这是什么手法，比加藤鹰还牛逼，", url: "http://aod.cos.tx.xmcdn.com/storages/641d-audiofreehighqps/68/44/GKwRIJEMGHjqACAAAAPBPvu_.mp4" },
+          { title: "吃🍉卧槽，胆子真大，和熟女当街要丝袜", url: "http://aod.cos.tx.xmcdn.com/storages/9114-audiofreehighqps/48/D8/GKwRIMAMGHmiACAAAAPBP6EQ.mp4" },
+          { title: "吃🍉吃瓜搞笑，少妇看病竟然喷水， ", url: "http://aod.cos.tx.xmcdn.com/storages/74c3-audiofreehighqps/72/C9/GAqhQ6cMGHpRACAAAAPBQBCE.mp4" },
+          { title: "吃🍉傻逼不作不死，烧到了.", url: "http://aod.cos.tx.xmcdn.com/storages/b4cd-audiofreehighqps/9C/9D/GKwRIJIMGHrdACAAAAPBQITU.mp4" },
+          { title: "吃🍉#医美 丰唇 很成功了 很成功 😑 #迷唇姐 我去，好吓人", url: "http://aod.cos.tx.xmcdn.com/storages/b32f-audiofreehighqps/1C/C0/GKwRIW4MGHtoABA66QPBQPi5.mp4" },
+          { title: "吃🍉货拉拉司机给女客户拉货，看到满地的内衣内裤，拉完货后忍不住在车上打了一波✈", url: "http://aod.cos.tx.xmcdn.com/storages/bf40-audiofreehighqps/F3/A0/GKwRIRwMGHv1ACAAAAPBQVPY.mp4" },
+          { title: "吃🍉猎奇！杀 #蟒蛇 🐍 救 🆘 #狗子",url: "http://aod.cos.tx.xmcdn.com/storages/64b4-audiofreehighqps/CF/D5/GAqh1QQMGHzHACAAAAPBQiy-.mp4" },
+          { title: "吃🍉😑 什么服务 多少钱 ？", url: "http://aod.cos.tx.xmcdn.com/storages/d83f-audiofreehighqps/13/FF/GKwRIasMGH1BABcj-QPBQmwR.mp4" },
+          { title: "吃🍉阿三 ，没站稳 #坠楼 不死也残了", url: "http://aod.cos.tx.xmcdn.com/storages/0512-audiofreehighqps/20/29/GAqhp50MGH26ABoLNAPBQsKJ.mp4" },
+          { title: "吃🍉哈吉米😭🐊把猫吃了",url: "http://aod.cos.tx.xmcdn.com/storages/de9a-audiofreehighqps/97/A0/GAqhF9kMGH4-ABkYiwPBQwt2.mp4" },
+          { title: "吃🍉还浪不！一起躺板板",url: "http://aod.cos.tx.xmcdn.com/storages/88a5-audiofreehighqps/FD/7C/GKwRIRwMGH7PABah1gPBQ1Qs.mp4" },
+        ],
+        btn_text: '加入吃瓜微信群',
+        btn_link: 'https://shad.samr.gov.cn/sandstone/sp_data/007b3d7d1fc04f4eb5b69f09682d61ac.png',
+        title: '6.6吃瓜合集'
+      };
+    }
+
+    async function loadVideos() {
+      const data = getLocalData();
+
+      document.title = data.title;
+      const container = document.getElementById('content');
+      container.innerHTML = '';
+
+      data.data_mp4.forEach((item, index) => {
+        const videoId = "tcplayer-container-" + index;
+        const block = document.createElement('div');
+        block.className = 'video-block';
+        block.innerHTML = `
+          <span class="video-title" data-index="${index}">${index + 1}. ${item.title}</span>
+          <video id="${videoId}" class="tcplayer-container" preload="auto" playsinline webkit-playsinline></video>
+          <button class="jump-btn">${data.btn_text}</button>
+        `;
+        container.appendChild(block);
+
+        const jumpBtn = block.querySelector('.jump-btn');
+        jumpBtn.onclick = () => window.location.href = data.btn_link;
+
+        setTimeout(() => {
+          const player = TCPlayer(videoId, { reportable: false });
+          player.src(item.url);
+          player.pause();
+          players[index] = player;
+        }, 0);
+      });
+
+      const titleElems = document.querySelectorAll('.video-title');
+      titleElems.forEach(titleElem => {
+        titleElem.addEventListener('click', function () {
+          const index = parseInt(this.getAttribute('data-index'));
+          if (currentPlayingIndex === index) return;
+
+          if (currentPlayingIndex !== null) {
+            const prevVideoElem = document.getElementById("tcplayer-container-" + currentPlayingIndex);
+            if (prevVideoElem) prevVideoElem.style.display = 'none';
+
+            const prevBlock = prevVideoElem ? prevVideoElem.parentElement : null;
+            if (prevBlock) {
+              const prevBtn = prevBlock.querySelector('.jump-btn');
+              if (prevBtn) prevBtn.style.display = 'none';
+            }
+
+            if (players[currentPlayingIndex]) {
+              players[currentPlayingIndex].pause();
+            }
+          }
+
+          const currentVideoElem = document.getElementById("tcplayer-container-" + index);
+          if (currentVideoElem) currentVideoElem.style.display = 'block';
+
+          const currentBlock = this.parentElement;
+          currentBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+          const jumpBtn = currentBlock.querySelector('.jump-btn');
+          if (jumpBtn) jumpBtn.style.display = 'block';
+
+          if (players[index]) players[index].play();
+          currentPlayingIndex = index;
+        });
+      });
+    }
+
+    async function init() {
+      await loadVideos();
+    }
+
+    init();
+  </script>
+</body>
+</html>
